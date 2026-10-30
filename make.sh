@@ -755,8 +755,8 @@ function pack_fit_image()
 		echo "ERROR: No 'dtc', please: apt-get install device-tree-compiler"
 		exit 1
 	elif [ "${ARM64_TRUSTZONE}" == "y" ]; then
-		if ! which python2 >/dev/null 2>&1 ; then
-			echo "ERROR: No python2"
+		if ! which python3 >/dev/null 2>&1 && ! which python2 >/dev/null 2>&1 ; then
+			echo "ERROR: No python3 or python2"
 			exit 1
 		fi
 	fi
@@ -822,7 +822,8 @@ select_ini_file
 handle_args_late
 sub_commands
 clean_files
-make PYTHON=python2 ${ARG_SPL_FWVER} ${ARG_FWVER} CROSS_COMPILE=${TOOLCHAIN} all --jobs=${JOB}
+PYTHON_BIN=$(which python3 2>/dev/null || which python2 2>/dev/null || echo python)
+make PYTHON=${PYTHON_BIN} ${ARG_SPL_FWVER} ${ARG_FWVER} CROSS_COMPILE=${TOOLCHAIN} all --jobs=${JOB}
 pack_images
 finish
 echo ${TOOLCHAIN}
